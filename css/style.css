@@ -55,7 +55,7 @@ h1,h2,h3,h4{margin:0;font-weight:300;letter-spacing:0}
 .mono{font-family:var(--mono);font-size:.75rem;line-height:1.4;letter-spacing:.04em;text-transform:uppercase;font-weight:500;color:var(--ink-3)}
 .mono--dark{color:var(--ink)}
 .eyebrow{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem}
-.eyebrow::before{content:"";width:2rem;height:1px;background:var(--ink)}
+.eyebrow::before{content:"";width:2.25rem;height:1.25rem;background:var(--blue);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 22'%3E%3Cpath d='M0 13 H11 L14 13 L17 1 L20 21 L23 13 H40' fill='none' stroke='%23000' stroke-width='2.4' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center/contain;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 22'%3E%3Cpath d='M0 13 H11 L14 13 L17 1 L20 21 L23 13 H40' fill='none' stroke='%23000' stroke-width='2.4' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center/contain;flex:none}
 .muted{color:var(--ink-3)}
 .small{font-size:.9375rem}
 
@@ -109,10 +109,11 @@ h1,h2,h3,h4{margin:0;font-weight:300;letter-spacing:0}
 }
 .header .container{display:flex;align-items:center;justify-content:space-between;gap:2rem;height:4.5rem}
 .brand{display:flex;align-items:center;gap:.8rem;min-width:0}
-.brand__mark{width:2.1rem;height:2.1rem;flex:none}
+.brand__mark{width:2.4rem;height:2.4rem;flex:none}
 .brand__text{display:flex;flex-direction:column;line-height:1.05}
 .brand__name{font-family:var(--sans);font-weight:600;font-size:1.0625rem;letter-spacing:.14em;color:var(--navy)}
-.brand__sub{font-family:var(--mono);font-size:.625rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-top:.2rem;white-space:nowrap}
+.brand__sub{font-family:var(--mono);font-size:.625rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-top:.25rem;line-height:1.25;white-space:nowrap}
+@media(max-width:520px){.brand__sub{white-space:normal;max-width:13rem;font-size:.5625rem}}
 .nav{display:none;align-items:center;gap:1.9rem}
 .nav a{font-size:.9375rem;font-weight:500;color:var(--ink-2);position:relative;padding:.35rem 0;transition:color .2s}
 .nav a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--navy);transition:right .25s cubic-bezier(.215,.61,.355,1)}
@@ -244,6 +245,7 @@ h1,h2,h3,h4{margin:0;font-weight:300;letter-spacing:0}
 .band .mono{color:rgba(255,255,255,.6)}
 .band .lede{color:rgba(255,255,255,.78)}
 .band .eyebrow::before{background:var(--gold)}
+.band .brand__mark{--mark-accent:#ffd74b}
 .band--olive{background:var(--olive-light);color:var(--ink)}
 .band--olive .h2{color:var(--olive-dark)}
 .band--olive .lede{color:var(--ink-2)}
@@ -264,6 +266,7 @@ blockquote{margin:0;padding-left:1.5rem;border-left:2px solid var(--gold);font-f
 @media(min-width:900px){.footer__top{grid-template-columns:minmax(0,5fr) repeat(3,minmax(0,2fr));gap:3rem}}
 .footer .brand__name{color:#fff}
 .footer .brand__sub{color:rgba(255,255,255,.55)}
+.footer .brand__mark{--mark-accent:#ffd74b}
 .footer__desc{margin-top:1.25rem;max-width:26rem;color:rgba(255,255,255,.7);font-size:.9375rem}
 .footer h4{font-family:var(--mono);font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;font-weight:500;color:rgba(255,255,255,.5);margin-bottom:1rem}
 .footer ul{list-style:none;margin:0;padding:0;display:grid;gap:.55rem}

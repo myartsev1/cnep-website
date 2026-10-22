@@ -114,20 +114,26 @@ def img_face(slug, alt="", box=0.8, **attrs):
     return f'<img src="assets/people/{slug}.{PHOTO_EXT.get(slug, "webp")}" alt="{e(alt)}" style="object-position:{face_pos(slug, box)}"{extra}>'
 
 ARR = '<span class="arr" aria-hidden="true">&rarr;</span>'
-LOGO_SVG = """<svg class="brand__mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-<rect x="1" y="1" width="38" height="38" rx="2" stroke="currentColor" stroke-width="1.5"/>
-<path d="M20 8c-6.6 0-11 4.9-11 11.5S13.4 32 20 32s11-5.9 11-12.5S26.6 8 20 8Z" stroke="currentColor" stroke-width="1.5"/>
-<path d="M20 8v24M9.5 19.5h21" stroke="currentColor" stroke-width="1.2" opacity=".55"/>
-<circle cx="15" cy="15" r="1.4" fill="currentColor"/><circle cx="25" cy="24" r="1.4" fill="currentColor"/>
-<circle cx="24.5" cy="14" r="1.4" fill="currentColor"/><circle cx="15.5" cy="25" r="1.4" fill="currentColor"/>
-<path d="M15 15l5 4.5 4.5-5.5M15.5 25l4.5-5.5 5 4.5" stroke="currentColor" stroke-width="1.2"/>
-</svg>"""
+SPIKE_PATH = "M5 22 H14 L17.5 22 L20 9 L22.5 29 L25 22 H35"
+DOTS = [(9,9),(16.33,9),(23.67,9),(31,9),(9,31),(16.33,31),(23.67,31),(31,31),(9,16.33),(31,16.33),(9,23.67),(31,23.67)]
+_dots = "".join(f'<circle cx="{x}" cy="{y}" r="1.5"/>' for x,y in DOTS)
+LOGO_SVG = (f'<svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">'
+            f'<rect x="1" y="1" width="38" height="38" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/>'
+            f'<g fill="currentColor" opacity=".35">{_dots}</g>'
+            f'<path d="{SPIKE_PATH}" fill="none" stroke="var(--mark-accent,#0073e6)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>'
+            f'</svg>')
+FAVICON_SVG = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">'
+               f'<rect width="40" height="40" rx="6" fill="#001f44"/>'
+               f'<g fill="#fff" opacity=".3">{_dots}</g>'
+               f'<path d="{SPIKE_PATH}" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>'
+               f'</svg>')
+SITE_URL = "https://myartsev1.github.io/cnep-website/"
 
 def e(s): return html.escape(s, quote=True)
 
 def brand(cls=""):
     return f"""<a class="brand {cls}" href="index.html" aria-label="CNEP home">{LOGO_SVG}
-<span class="brand__text"><span class="brand__name">CNEP</span><span class="brand__sub">UC Berkeley &middot; UCSF</span></span></a>"""
+<span class="brand__text"><span class="brand__name">CNEP</span><span class="brand__sub">Center for Neural Engineering &amp; Prostheses</span></span></a>"""
 
 def header(current):
     def links(cls=""):
@@ -172,6 +178,10 @@ def footer():
   </div>
 </footer>"""
 
+os.makedirs(os.path.join(OUT, "assets", "brand"), exist_ok=True)
+with open(os.path.join(OUT, "assets", "brand", "favicon.svg"), "w", encoding="utf-8") as _f:
+    _f.write(FAVICON_SVG)
+
 def page(filename, title, description, body):
     full_title = SITE if filename == "index.html" else f"{title} — CNEP"
     doc = f"""<!doctype html>
@@ -184,6 +194,12 @@ def page(filename, title, description, body):
 <meta property="og:title" content="{e(full_title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:type" content="website">
+<meta property="og:image" content="{SITE_URL}assets/brand/cnep-social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
 <meta name="theme-color" content="#fbf8f2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -347,7 +363,7 @@ home = f"""
 <section class="hero container">
   <div class="hero__grid">
     <div>
-      <div class="eyebrow mono">UC Berkeley &middot; UCSF &middot; Est. 2010</div>
+      <div class="eyebrow mono">Center for Neural Engineering &amp; Prostheses &middot; UC Berkeley &middot; UCSF</div>
       <h1 class="display">Engineering technology to restore function for people with neurological disabilities.</h1>
     </div>
     <div class="hero__aside">
@@ -600,3 +616,10 @@ donate = f"""
 </section>
 """
 page("donate.html", "Support CNEP", "Support the Center for Neural Engineering & Prostheses.", donate)
+
+# ------------------------------------------------------------------ 404
+page("404.html", "Page not found", "That page could not be found.", f"""
+<section class="page-head container"><div class="eyebrow mono">404</div><h1 class="display">That page isn't here.</h1>
+<p class="lede">The address may have changed. Try one of the pages below.</p>
+<div class="btn-row"><a class="btn btn--solid" href="index.html">Home {ARR}</a><a class="btn" href="faculty.html">Faculty</a><a class="btn" href="resources.html">Tools &amp; Resources</a></div></section>
+""")
