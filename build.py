@@ -245,6 +245,94 @@ def inquiry_form(heading="Send us a message", intro=""):
   </form>
 </div>"""
 
+
+# ------------------------------------------------------------------ HERO GRAPHIC
+def hero_graphic():
+    """Original illustration: a multi-channel neural recording over an electrode grid.
+    Deterministic pseudo-random so every build renders the same image."""
+    import math, random
+    rnd = random.Random(2010)
+    W, H = 1600, 760
+    out = []
+    out.append(f'<svg class="neuro" viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="neuro-t">')
+    out.append('<title id="neuro-t">Illustration of multi-channel neural recordings over an electrode array</title>')
+    out.append('<defs>'
+               '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0c2043"/><stop offset="1" stop-color="#001f44"/></linearGradient>'
+               '<linearGradient id="fade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#001f44" stop-opacity="1"/><stop offset=".12" stop-color="#001f44" stop-opacity="0"/><stop offset=".9" stop-color="#001f44" stop-opacity="0"/><stop offset="1" stop-color="#001f44" stop-opacity="1"/></linearGradient>'
+               '<radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#0073e6" stop-opacity=".55"/><stop offset="1" stop-color="#0073e6" stop-opacity="0"/></radialGradient>'
+               '</defs>')
+    out.append(f'<rect width="{W}" height="{H}" fill="url(#bg)"/>')
+    # electrode grid (16 x 8), faint
+    gx0, gy0, cols, rows, pitch = 120, 90, 16, 8, 84
+    out.append('<g fill="none" stroke="#ffffff" stroke-opacity=".12" stroke-width="1">')
+    for c in range(cols):
+        x = gx0 + c * pitch
+        out.append(f'<line x1="{x}" y1="{gy0-30}" x2="{x}" y2="{gy0+(rows-1)*pitch+30}"/>')
+    for r in range(rows):
+        y = gy0 + r * pitch
+        out.append(f'<line x1="{gx0-30}" y1="{y}" x2="{gx0+(cols-1)*pitch+30}" y2="{y}"/>')
+    out.append('</g>')
+    # active electrode cluster glow
+    out.append(f'<circle cx="{gx0+9*pitch}" cy="{gy0+3*pitch}" r="230" fill="url(#glow)"/>')
+    out.append('<g>')
+    for r in range(rows):
+        for c in range(cols):
+            x, y = gx0 + c * pitch, gy0 + r * pitch
+            d = math.hypot(c - 9, r - 3)
+            act = max(0.0, 1 - d / 5.5)
+            op = 0.22 + 0.7 * act
+            rad = 3.2 + 3.8 * act
+            col = "#ffd74b" if act > 0.82 else "#ffffff"
+            out.append(f'<circle cx="{x}" cy="{y}" r="{rad:.1f}" fill="{col}" fill-opacity="{op:.2f}"/>')
+    out.append('</g>')
+    # traces: 8 channels, smooth noise + spikes, drawn across the full width
+    n_ch, x0, x1 = 8, 60, W - 60
+    top, gap = 150, 68
+    pts_n = 420
+    out.append('<g fill="none" stroke-linecap="round" stroke-linejoin="round">')
+    for ch in range(n_ch):
+        base = top + ch * gap
+        amp = 10 + 12 * math.exp(-((ch - 3.2) ** 2) / 6)
+        # smooth noise via summed sines with random phase
+        comps = [(rnd.uniform(0.6, 1.0), rnd.uniform(0, 6.28), rnd.uniform(3, 9)) for _ in range(5)]
+        spikes = sorted(rnd.sample(range(40, pts_n - 40), rnd.randint(4, 9)))
+        pts = []
+        for i in range(pts_n):
+            t = i / (pts_n - 1)
+            v = sum(a * math.sin(t * f * 6.28 + ph) for a, ph, f in comps) / 3
+            v += rnd.gauss(0, 0.22)
+            for sp in spikes:
+                dd = i - sp
+                if -3 <= dd <= 8:
+                    v -= (2.6 if ch in (2, 3, 4) else 1.6) * math.exp(-(dd * dd) / 5) * (1 if dd >= 0 else 0.4)
+            x = x0 + t * (x1 - x0)
+            pts.append((x, base + v * amp))
+        d = "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in pts)
+        hot = ch in (2, 3, 4)
+        stroke = "#9cc8ff" if hot else "#ffffff"
+        op = 0.95 if hot else 0.55
+        sw = 1.9 if hot else 1.3
+        out.append(f'<path d="{d}" stroke="{stroke}" stroke-opacity="{op}" stroke-width="{sw}"/>')
+        # channel label
+        out.append(f'<text x="{x0}" y="{base-26}" font-family="IBM Plex Mono, monospace" font-size="13" letter-spacing="1.5" fill="#ffffff" fill-opacity=".45">CH {ch+1:02d}</text>')
+    out.append('</g>')
+    # spike-time raster strip at the bottom
+    out.append('<g>')
+    ry = H - 86
+    out.append(f'<text x="{x0}" y="{ry-18}" font-family="IBM Plex Mono, monospace" font-size="13" letter-spacing="1.5" fill="#ffffff" fill-opacity=".45">UNITS</text>')
+    for u in range(24):
+        yy = ry + u * 2.6
+        for _ in range(rnd.randint(9, 26)):
+            xx = rnd.uniform(x0, x1)
+            out.append(f'<rect x="{xx:.1f}" y="{yy:.1f}" width="1.6" height="1.6" fill="#ffd74b" fill-opacity=".8"/>')
+    out.append('</g>')
+    # time scale bar
+    out.append(f'<g stroke="#ffffff" stroke-opacity=".7" stroke-width="1.5"><line x1="{x1-200}" y1="{H-30}" x2="{x1}" y2="{H-30}"/><line x1="{x1-200}" y1="{H-36}" x2="{x1-200}" y2="{H-24}"/><line x1="{x1}" y1="{H-36}" x2="{x1}" y2="{H-24}"/></g>')
+    out.append(f'<text x="{x1-100}" y="{H-40}" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" letter-spacing="1.5" fill="#ffffff" fill-opacity=".7">500 ms</text>')
+    out.append(f'<rect width="{W}" height="{H}" fill="url(#fade)"/>')
+    out.append('</svg>')
+    return "".join(out)
+
 # ------------------------------------------------------------------ HOME
 focus_items = [
     ("01", "Sensory function", "Interfaces that restore or augment sensory experience for people who have lost it, drawing on neural recording, stimulation and signal processing."),
@@ -269,8 +357,8 @@ home = f"""
   </div>
   <div class="hero-media reveal">
     <figure>
-      <div class="frame"><img src="assets/img/about-participant.webp" alt="A research participant in a wheelchair watches a screen showing a digital avatar during a brain-computer interface session." width="1884" height="1266" fetchpriority="high"></div>
-      <figcaption><span class="mono">Speech neuroprosthesis research, UCSF</span><span class="mono">Photo: Noah Berger / UCSF</span></figcaption>
+      <div class="frame frame--neuro">{hero_graphic()}</div>
+      <figcaption><span class="mono">Multi-channel cortical recording over an electrode array</span><span class="mono">Illustration</span></figcaption>
     </figure>
   </div>
 </section>
@@ -316,13 +404,13 @@ home = f"""
     <div class="aside"><a class="link" href="leadership.html">Read the full biographies {ARR}</a></div>
   </div>
   <div class="grid grid-2 reveal">
-    <a class="person person--lg" href="leadership.html#chang">
+    <a class="leader-card" href="leadership.html#chang">
       <div class="person__photo">{img_face("edward-chang-lead", "Edward Chang", 0.8, loading="lazy")}</div>
-      <div><div class="h3">Edward Chang, MD</div><div class="mono person__meta">Co-Director &middot; UCSF</div><p class="muted small" style="margin-top:.6rem">Chair of Neurological Surgery at UCSF and a founding director of CNEP. Pioneer of real-time speech decoding through brain-computer interfaces.</p></div>
+      <div><div class="h3">Edward Chang, MD</div><div class="mono person__meta">Co-Director &middot; UCSF</div><p class="muted small" style="margin-top:.6rem">Chair of Neurological Surgery at UCSF and a founding director of CNEP. Pioneer of real-time speech decoding through brain-computer interfaces.</p><span class="link small" style="margin-top:.6rem">Biography {ARR}</span></div>
     </a>
-    <a class="person person--lg" href="leadership.html#yartsev">
+    <a class="leader-card" href="leadership.html#yartsev">
       <div class="person__photo">{img_face("michael-yartsev-lead", "Michael Yartsev", 0.8, loading="lazy")}</div>
-      <div><div class="h3">Michael Yartsev, PhD</div><div class="mono person__meta">Co-Director &middot; UC Berkeley</div><p class="muted small" style="margin-top:.6rem">Howard Hughes Medical Institute Investigator and associate professor of Bioengineering and Neuroscience at UC Berkeley.</p></div>
+      <div><div class="h3">Michael Yartsev, PhD</div><div class="mono person__meta">Co-Director &middot; UC Berkeley</div><p class="muted small" style="margin-top:.6rem">Howard Hughes Medical Institute Investigator and associate professor of Bioengineering and Neuroscience at UC Berkeley.</p><span class="link small" style="margin-top:.6rem">Biography {ARR}</span></div>
     </a>
   </div>
 </section>
