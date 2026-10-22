@@ -114,19 +114,15 @@ def img_face(slug, alt="", box=0.8, **attrs):
     return f'<img src="assets/people/{slug}.{PHOTO_EXT.get(slug, "webp")}" alt="{e(alt)}" style="object-position:{face_pos(slug, box)}"{extra}>'
 
 ARR = '<span class="arr" aria-hidden="true">&rarr;</span>'
-SPIKE_PATH = "M5 22 H14 L17.5 22 L20 9 L22.5 29 L25 22 H35"
-DOTS = [(9,9),(16.33,9),(23.67,9),(31,9),(9,31),(16.33,31),(23.67,31),(31,31),(9,16.33),(31,16.33),(9,23.67),(31,23.67)]
-_dots = "".join(f'<circle cx="{x}" cy="{y}" r="1.5"/>' for x,y in DOTS)
-LOGO_SVG = (f'<svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">'
-            f'<rect x="1" y="1" width="38" height="38" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/>'
-            f'<g fill="currentColor" opacity=".35">{_dots}</g>'
-            f'<path d="{SPIKE_PATH}" fill="none" stroke="var(--mark-accent,#0073e6)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>'
-            f'</svg>')
-FAVICON_SVG = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">'
-               f'<rect width="40" height="40" rx="6" fill="#001f44"/>'
-               f'<g fill="#fff" opacity=".3">{_dots}</g>'
-               f'<path d="{SPIKE_PATH}" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>'
-               f'</svg>')
+MARK1_INNER = ('<rect x="1" y="1" width="38" height="38" rx="2" fill="none" stroke="{c}" stroke-width="1.5"/>'
+               '<path d="M20 8c-6.6 0-11 4.9-11 11.5S13.4 32 20 32s11-5.9 11-12.5S26.6 8 20 8Z" fill="none" stroke="{c}" stroke-width="1.5"/>'
+               '<path d="M20 8v24M9.5 19.5h21" fill="none" stroke="{c}" stroke-width="1.2" opacity=".55"/>'
+               '<circle cx="15" cy="15" r="1.4" fill="{c}"/><circle cx="25" cy="24" r="1.4" fill="{c}"/>'
+               '<circle cx="24.5" cy="14" r="1.4" fill="{c}"/><circle cx="15.5" cy="25" r="1.4" fill="{c}"/>'
+               '<path d="M15 15l5 4.5 4.5-5.5M15.5 25l4.5-5.5 5 4.5" fill="none" stroke="{c}" stroke-width="1.2"/>')
+LOGO_SVG = '<svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">' + MARK1_INNER.format(c="currentColor") + '</svg>'
+FAVICON_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="6" fill="#001f44"/>'
+               '<g transform="translate(6 6) scale(0.7)">' + MARK1_INNER.format(c="#ffffff").replace('stroke-width="1.5"','stroke-width="2.2"').replace('stroke-width="1.2"','stroke-width="1.8"') + '</g></svg>')
 SITE_URL = "https://myartsev1.github.io/cnep-website/"
 
 def e(s): return html.escape(s, quote=True)
