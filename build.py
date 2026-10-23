@@ -122,7 +122,7 @@ MARK_SVG = _wrap(_mark("cnep", **MARK_KW), 120)
 LOGO_SVG = '<img class="brand__mark" src="assets/brand/cnep-mark.svg" alt="" width="96" height="120">'
 FAVICON_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#001f44"/>'
                '<g transform="translate(6.9 3.2) scale(0.282) translate(-2 0)">' + _mark("fav", **MARK_KW) + '</g></svg>')
-SITE_URL = "https://myartsev1.github.io/cnep-website/"
+SITE_URL = "https://www.uc-cnep.org/"
 
 def e(s): return html.escape(s, quote=True)
 
@@ -191,6 +191,7 @@ def page(filename, title, description, body):
 <meta property="og:title" content="{e(full_title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:type" content="website">
+<link rel="canonical" href="{SITE_URL}{"" if filename == "index.html" else filename}">
 <meta property="og:image" content="{SITE_URL}assets/brand/cnep-social.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -620,3 +621,21 @@ page("404.html", "Page not found", "That page could not be found.", f"""
 <p class="lede">The address may have changed. Try one of the pages below.</p>
 <div class="btn-row"><a class="btn btn--solid" href="index.html">Home {ARR}</a><a class="btn" href="faculty.html">Faculty</a><a class="btn" href="resources.html">Tools &amp; Resources</a></div></section>
 """)
+
+# ------------------------------------------------------------------ REDIRECTS from the old Squarespace URLs
+REDIRECTS = {
+    "faculty-1": "faculty.html",
+    "tools-and-resources": "resources.html",
+    "2026-cnep-meeting": "annual-meeting.html",
+    "new-dropdown": "annual-meeting.html",
+    "home": "index.html",
+}
+for old, new in REDIRECTS.items():
+    d = os.path.join(OUT, old); os.makedirs(d, exist_ok=True)
+    with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as f:
+        f.write(f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Redirecting</title>
+<link rel="canonical" href="{SITE_URL}{new}"><meta http-equiv="refresh" content="0; url=/{new}">
+<script>location.replace("/{new}" + location.hash);</script></head>
+<body><p>This page has moved to <a href="/{new}">{SITE_URL}{new}</a>.</p></body></html>
+""")
+    print("redirect", old, "->", new)

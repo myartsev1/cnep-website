@@ -17,4 +17,7 @@ python3 -m http.server 8765
 then open http://localhost:8765/
 
 ## Deploy
-Any static host works (GitHub Pages, Netlify, Cloudflare Pages). Upload the whole folder.
+Hosted on GitHub Pages from https://github.com/myartsev1/cnep-website (branch `main`, root).
+Every `git push` to `main` goes live in about a minute. Production domain: https://www.uc-cnep.org/
+(DNS at Squarespace Domains: A records for the apex to GitHub Pages, CNAME `www` -> `myartsev1.github.io`).
+Old Squarespace URLs (`/faculty-1`, `/tools-and-resources`, `/2026-cnep-meeting`, `/new-dropdown`) redirect to the new pages.
