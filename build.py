@@ -634,8 +634,8 @@ for old, new in REDIRECTS.items():
     d = os.path.join(OUT, old); os.makedirs(d, exist_ok=True)
     with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as f:
         f.write(f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Redirecting</title>
-<link rel="canonical" href="{SITE_URL}{new}"><meta http-equiv="refresh" content="0; url=/{new}">
-<script>location.replace("/{new}" + location.hash);</script></head>
-<body><p>This page has moved to <a href="/{new}">{SITE_URL}{new}</a>.</p></body></html>
+<link rel="canonical" href="{SITE_URL}{new}"><meta http-equiv="refresh" content="0; url=../{new}">
+<script>location.replace("../{new}" + location.hash);</script></head>
+<body><p>This page has moved to <a href="../{new}">{SITE_URL}{new}</a>.</p></body></html>
 """)
     print("redirect", old, "->", new)
