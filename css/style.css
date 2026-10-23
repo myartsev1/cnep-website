@@ -121,6 +121,8 @@ h1,h2,h3,h4{margin:0;font-weight:300;letter-spacing:0}
 .nav a:hover::after,.nav a[aria-current="page"]::after{right:0}
 .nav .btn{padding:.6rem 1.05rem;font-size:.875rem;margin-left:.5rem}
 .nav .btn::after{display:none}
+.nav a.btn--solid,.nav a.btn--solid[aria-current="page"]{color:#fff;background:var(--navy);border-color:var(--navy)}
+.nav a.btn--solid:hover{background:var(--blue);border-color:var(--blue);color:#fff}
 .menu-btn{display:inline-flex;flex-direction:column;justify-content:center;gap:5px;width:2.5rem;height:2.5rem;border:0;background:transparent;cursor:pointer;padding:.5rem}
 .menu-btn span{display:block;height:1.5px;background:var(--navy);transition:transform .25s,opacity .2s}
 .menu-btn[aria-expanded="true"] span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
