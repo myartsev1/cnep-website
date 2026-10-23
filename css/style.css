@@ -109,7 +109,7 @@ h1,h2,h3,h4{margin:0;font-weight:300;letter-spacing:0}
 }
 .header .container{display:flex;align-items:center;justify-content:space-between;gap:2rem;height:4.5rem}
 .brand{display:flex;align-items:center;gap:.8rem;min-width:0}
-.brand__mark{width:2.25rem;height:2.25rem;flex:none}
+.brand__mark{width:auto;height:2.6rem;flex:none}
 .brand__text{display:flex;flex-direction:column;line-height:1.05}
 .brand__name{font-family:var(--sans);font-weight:600;font-size:1.0625rem;letter-spacing:.14em;color:var(--navy)}
 .brand__sub{font-family:var(--mono);font-size:.625rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-top:.25rem;line-height:1.25;white-space:nowrap}
